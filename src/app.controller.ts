@@ -24,10 +24,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @UseGuards(LocalAuthGuard)
+ // @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   @HttpCode(200) // Set HTTP status for successful login
   async login(@Request() req) {
+    console.log('Logged in User:', req.user); // Log the user object
     // Pass the validated user to AuthService for token generation
     return this.authService.login(req.user);
   }
