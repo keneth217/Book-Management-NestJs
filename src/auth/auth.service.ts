@@ -10,8 +10,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username); // Fetch the user from the database
+  async validateUser(userName: string, pass: string): Promise<any> {
+    const user = await this.usersService.findOne(userName); // Fetch the user from the database
     if (user && (await bcrypt.compare(pass, user.password))) {
       console.log('User:', user); // Log the user object
       // Compare the provided password with the hashed password
@@ -23,7 +23,7 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.id }; // Use appropriate payload keys
+    const payload = { userName: user.userName, sub: user.id }; // Use appropriate payload keys
     return {
       access_token: this.jwtService.sign(payload), // Generate a JWT
     };
