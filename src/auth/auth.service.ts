@@ -13,19 +13,27 @@ export class AuthService {
   async validateUser(userName: string, pass: string): Promise<any> {
     const user = await this.usersService.findOne(userName); // Fetch the user from the database
     if (user && (await bcrypt.compare(pass, user.password))) {
-      console.log('User:', user); // Log the user object
-      // Compare the provided password with the hashed password
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...result } = user;
+      // Password validation succeeded
+      const { password, ...result } = user; // Exclude password before returning
       return result; // Return user details without the password
     }
-    return null; // Return null if validation fails
+    return null; // Validation failed
   }
 
   async login(user: any) {
-    const payload = { userName: user.userName, sub: user.id }; // Use appropriate payload keys
+    const payload = { userName: user.userName, sub: user.id }; // Create payload for JWT
+    const token = this.jwtService.sign(payload); // Generate JWT
+
+    // Return both token and user details
     return {
-      access_token: this.jwtService.sign(payload), // Generate a JWT
+      access_token: token,
+      user: {
+        id: user.id,
+        userName: user.userName,
+        email: user.email, // Include necessary fields
+        phone: user.phone,
+        role: user.role, // Include additional user details as needed
+      },
     };
   }
 }
