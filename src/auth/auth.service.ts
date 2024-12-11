@@ -14,6 +14,7 @@ export class AuthService {
     const user = await this.usersService.findOne(userName); // Fetch the user from the database
     if (user && (await bcrypt.compare(pass, user.password))) {
       // Password validation succeeded
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user; // Exclude password before returning
       return result; // Return user details without the password
     }
