@@ -6,6 +6,7 @@ import {
   UseGuards,
   Res,
   HttpCode,
+  Logger,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { LocalAuthGuard } from './auth/local-auth.guard';
@@ -24,10 +25,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
- // @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   @HttpCode(200) // Set HTTP status for successful login
   async login(@Request() req) {
+    Logger.debug('User object:', req.user);
     console.log('Logged in User:', req.user); // Log the user object
     // Pass the validated user to AuthService for token generation
     return this.authService.login(req.user);
