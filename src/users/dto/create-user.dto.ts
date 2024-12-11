@@ -1,4 +1,11 @@
-import { IsEmail, IsNotEmpty, IsOptional, Length } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  Length,
+} from 'class-validator';
+import { Role } from '../../auth/roles/role.enum';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -17,4 +24,7 @@ export class CreateUserDto {
 
   @IsOptional()
   phone?: string;
+  @IsOptional()
+  @IsEnum(Role, { message: 'Role must be either user or admin' })
+  role?: Role;
 }
