@@ -15,22 +15,22 @@ import { AuthController } from './auth.controller';
     AuthService,
     LocalStrategy,
     JwtStrategy,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard, // Apply JwtAuthGuard globally
+    },
   ],
-  exports: [AuthService],
+  exports: [AuthService], // Allow AuthService to be reused in other modules
 
-  controllers: [AuthController],
+  controllers: [AuthController], // Define the controller for auth-related routes
 
   imports: [
-    UsersModule,
-    PassportModule,
+    UsersModule, // User management module
+    PassportModule, // Passport strategies for authentication
     JwtModule.register({
-      global: true,
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '1h' }, // Extend expiration to 1 hour or more
+      global: true, // Makes the module's configuration available app-wide
+      secret: jwtConstants.secret, // Secret key for JWT signing
+      signOptions: { expiresIn: '1h' }, // Set token expiration
     }),
   ],
 })
