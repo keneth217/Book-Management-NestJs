@@ -10,6 +10,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangeRoleDto } from '../auth/roles/ChangeRoleDto';
 
 @Controller('users')
 export class UsersController {
@@ -38,5 +39,13 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.usersService.remove(+id);
+  }
+
+  @Patch(':id/role')
+  async changeRole(
+    @Param('id') id: number,
+    @Body() changeRoleDto: ChangeRoleDto,
+  ) {
+    return this.usersService.changeRole(id, changeRoleDto.role);
   }
 }
