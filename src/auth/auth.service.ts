@@ -22,7 +22,7 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { userName: user.userName, sub: user.id }; // Create payload for JWT
+    const payload = { userName: user.userName, sub: user.id, role: user.role }; // Create payload for JWT
     const token = await this.jwtService.signAsync(payload); // Generate JWT
     if (!user) {
       throw new UnauthorizedException();
