@@ -6,7 +6,8 @@ import {
   Logger,
   Post,
   Request,
-  Res, SetMetadata,
+  Res,
+  SetMetadata,
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
@@ -31,6 +32,7 @@ export class AuthController {
   @Get('profile')
   @HttpCode(HttpStatus.OK)
   getProfile(@Request() req) {
+    Logger.debug('User profile:', req.user);
     return {
       message: 'User profile fetched successfully',
       user: req.user,
