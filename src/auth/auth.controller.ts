@@ -6,7 +6,7 @@ import {
   Logger,
   Post,
   Request,
-  Res,
+  Res, SetMetadata,
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
@@ -18,7 +18,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
-
+  @SetMetadata('isPublic', true) // Mark this route as public
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   @Post('/login')
@@ -36,7 +36,7 @@ export class AuthController {
       user: req.user,
     };
   }
-
+  @SetMetadata('isPublic', true) // Mark this route as public
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   logout(@Res() res: Response) {
