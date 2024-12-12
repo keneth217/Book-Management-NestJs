@@ -1,4 +1,6 @@
+// src/auth/roles/role.enum.ts
 export enum Role {
-  User = 'user',
   Admin = 'admin',
+  User = 'user',
+  Guest = 'guest',
 }
