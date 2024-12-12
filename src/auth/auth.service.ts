@@ -35,7 +35,7 @@ export class AuthService {
         userName: user.userName,
         email: user.email, // Include necessary fields
         phone: user.phone,
-        role: user.role, // Include additional user details as needed
+        role: [user.role], // Include additional user details as needed
       },
     };
   }
