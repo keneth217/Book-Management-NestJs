@@ -18,6 +18,7 @@ export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   create(@Body() createBookDto: CreateBookDto) {
     return this.booksService.create(createBookDto);
   }
@@ -27,17 +28,17 @@ export class BooksController {
   findAll() {
     return this.booksService.findAll();
   }
-
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.booksService.findOne(+id);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
     return this.booksService.update(+id, updateBookDto);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.booksService.remove(+id);
