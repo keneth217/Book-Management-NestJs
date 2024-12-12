@@ -6,11 +6,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 @Module({
   imports: [
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -26,6 +34,12 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
