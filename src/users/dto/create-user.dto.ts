@@ -1,11 +1,13 @@
 import {
   IsEmail,
-  IsEnum,
   IsNotEmpty,
   IsOptional,
   Length,
+  ArrayNotEmpty,
+  IsArray,
+  IsString,
 } from 'class-validator';
-import { Role } from '../../auth/roles/role.enum';
+import { Role } from '../../roles/entities/role.entity';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -24,7 +26,11 @@ export class CreateUserDto {
 
   @IsOptional()
   phone?: string;
+
+  // Allow multiple roles
   @IsOptional()
-  @IsEnum(Role, { message: 'Role must be either user or admin' })
-  role?: Role;
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  roles?: Role[]; // Expect an array of role names
 }
