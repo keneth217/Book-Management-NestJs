@@ -27,25 +27,33 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.usersService.findOne(+id);
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.usersService.remove(+id);
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(id);
   }
 
-  @Patch(':id/role')
+  @Patch(':id/role/add')
   async changeRole(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() changeRoleDto: ChangeRoleDto,
   ) {
-    return this.usersService.changeRole(id, changeRoleDto.role);
+    return this.usersService.assignRole(id, changeRoleDto.role);
+  }
+
+  @Patch(':id/role/remove')
+  async removeRole(
+    @Param('id') id: string,
+    @Body() changeRoleDto: ChangeRoleDto,
+  ) {
+    return this.usersService.removeRole(id, changeRoleDto.role);
   }
 }
