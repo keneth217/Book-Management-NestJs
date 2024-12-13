@@ -1,10 +1,18 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Role } from '../../auth/roles/role.enum';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Role } from '../../roles/entities/role.entity';
+import { Book } from '../../books/entities/book.entity';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid') // Use UUID for primary key
+  id: string;
 
   @Column()
   name: string;
@@ -21,6 +29,9 @@ export class User {
   @Column({ nullable: true })
   phone: string;
 
-  @Column({ type: 'enum', enum: Role, default: Role.User })
-  role: Role;
+  @ManyToMany(() => Role, (role) => role.users, { cascade: true })
+  @JoinTable()
+  roles: Role[];
+  @OneToMany(() => Book, (book) => book.borrowedBy)
+  books: Book[]; // Books borrowed by the user
 }
