@@ -1,6 +1,7 @@
-// src/auth/roles/roles.decorator.ts
 import { SetMetadata } from '@nestjs/common';
-import { Role } from './role.enum';
 
+// Change this to accept strings for role names
 export const ROLES_KEY = 'roles';
-export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);
+
+// Accept role names (strings) as arguments instead of Role entities
+export const Roles = (...roles: string[]) => SetMetadata(ROLES_KEY, roles);
