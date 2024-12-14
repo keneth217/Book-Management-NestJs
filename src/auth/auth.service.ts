@@ -2,12 +2,18 @@ import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { use } from 'passport';
+import { Repository } from 'typeorm';
+import { User } from '../users/entities/user.entity';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { GoogleDto } from '../users/dto/google-dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly userrepository: Repository<User>,
   ) {}
 
   async validateUser(userName: string, pass: string): Promise<any> {
@@ -53,5 +59,13 @@ export class AuthService {
         role: roleNames, // Return roles as an array of names
       },
     };
+  }
+  async validateGoogleUser(details: GoogleDto) {
+    const user = await this.userrepository.findOneBy({ email: details.email });
+
+    if (user) return user;
+    console.log('user not found creating one...........');
+    const newUser = this.userrepository.create(user);
+    return this.userrepository.save(newUser);
   }
 }
