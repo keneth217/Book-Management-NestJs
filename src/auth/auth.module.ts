@@ -9,15 +9,21 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants/constants';
 import { AuthController } from './auth.controller';
+import { GoogleStrategy } from './strategy/oauth2.strategy';
 
 @Module({
   providers: [
     AuthService,
     LocalStrategy,
     JwtStrategy,
+    GoogleStrategy,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard, // Apply JwtAuthGuard globally
+    },
+    {
+      provide: 'AUTH_SERVICE',
+      useClass: AuthService, // Apply JwtAuthGuard globally
     },
   ],
   exports: [AuthService], // Allow AuthService to be reused in other modules
@@ -25,6 +31,7 @@ import { AuthController } from './auth.controller';
   controllers: [AuthController], // Define the controller for auth-related routes
 
   imports: [
+    PassportModule.register({ defaultStrategy: 'google' }),
     UsersModule, // User management module
     PassportModule, // Passport strategies for authentication
     JwtModule.register({
