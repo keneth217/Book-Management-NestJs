@@ -10,6 +10,7 @@ import { BooksModule } from './books/books.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { RolesModule } from './roles/roles.module';
           .default('development'),
       }),
     }),
+    PassportModule.register({ session: true }),
 
     // Configure TypeORM using validated .env variables
     TypeOrmModule.forRootAsync({
