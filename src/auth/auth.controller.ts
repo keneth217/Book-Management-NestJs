@@ -15,6 +15,7 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { GoogleAuthGuard } from './guards/google.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -28,7 +29,7 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('profile')
   @HttpCode(HttpStatus.OK)
   getProfile(@Request() req) {
@@ -47,4 +48,12 @@ export class AuthController {
       .status(HttpStatus.OK)
       .send({ message: 'Logged out successfully' });
   }
+  @SetMetadata('isPublic', true)
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/login')
+  async authGoogleLogin() {}
+  @UseGuards(GoogleAuthGuard)
+  @SetMetadata('isPublic', true)
+  @Get('google/redirect')
+  async authGoogleRedirect() {}
 }
