@@ -1,5 +1,4 @@
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './strategy/local.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
@@ -10,35 +9,34 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants/constants';
 import { AuthController } from './auth.controller';
 import { GoogleStrategy } from './strategy/oauth2.strategy';
+import { SessionSerializer } from './strategy/Serializer';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../users/entities/user.entity';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Module({
+  imports: [
+    forwardRef(() => UsersModule),
+    TypeOrmModule.forFeature([User]),
+    PassportModule.register({ defaultStrategy: 'google' }),
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '1h' },
+    }),
+  ],
   providers: [
     AuthService,
     LocalStrategy,
     JwtStrategy,
     GoogleStrategy,
+    SessionSerializer,
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard, // Apply JwtAuthGuard globally
-    },
-    {
-      provide: 'AUTH_SERVICE',
-      useClass: AuthService, // Apply JwtAuthGuard globally
+      useClass: JwtAuthGuard,
     },
   ],
-  exports: [AuthService], // Allow AuthService to be reused in other modules
-
-  controllers: [AuthController], // Define the controller for auth-related routes
-
-  imports: [
-    PassportModule.register({ defaultStrategy: 'google' }),
-    UsersModule, // User management module
-    PassportModule, // Passport strategies for authentication
-    JwtModule.register({
-      global: true, // Makes the module's configuration available app-wide
-      secret: jwtConstants.secret, // Secret key for JWT signing
-      signOptions: { expiresIn: '1h' }, // Set token expiration
-    }),
-  ],
+  exports: [AuthService],
+  controllers: [AuthController],
 })
 export class AuthModule {}
