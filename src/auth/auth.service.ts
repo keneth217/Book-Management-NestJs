@@ -2,18 +2,20 @@ import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { use } from 'passport';
+
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+
 import { GoogleDto } from '../users/dto/google-dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly userrepository: Repository<User>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async validateUser(userName: string, pass: string): Promise<any> {
@@ -61,11 +63,34 @@ export class AuthService {
     };
   }
   async validateGoogleUser(details: GoogleDto) {
-    const user = await this.userrepository.findOneBy({ email: details.email });
+    // Check if user already exists by email
+    const user = await this.userRepository.findOneBy({ email: details.email });
 
-    if (user) return user;
-    console.log('user not found creating one...........');
-    const newUser = this.userrepository.create(user);
-    return this.userrepository.save(newUser);
+    if (user) {
+      return user;
+    }
+
+    console.log('User not found, creating one...');
+
+    // Create a new user with the necessary details
+    const newUser = this.userRepository.create({
+      email: details.email,
+      name: details.name, // Ensure name is passed from the Google profile
+      userName: details.userName,
+      picture: details.picture,
+    });
+
+    // Log user details for debugging
+    console.log('Creating USER...');
+    console.log('Name: ' + newUser.name);
+    console.log('Email: ' + newUser.email);
+
+    // Save the new user in the database
+    return this.userRepository.save(newUser);
+  }
+
+  async finduser(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
+    return user;
   }
 }
