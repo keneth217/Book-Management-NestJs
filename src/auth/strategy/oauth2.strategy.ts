@@ -14,9 +14,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID: configService.get<string>('OAUTH2_CLIENT_ID'), // Use ConfigService
       clientSecret: configService.get<string>('OAUTH2_CLIENT_SECRET'), // Use ConfigService
-      callbackURL:
-        configService.get<string>('GOOGLE_CALLBACK_URL') ||
-        'http://localhost:4000/api/auth/google/redirect', // Default fallback
+      callbackURL: configService.get<string>('GOOGLE_CALLBACK_URL'), // Default fallback
       scope: ['profile', 'email'], // Scopes for Google OAuth2
     });
   }
