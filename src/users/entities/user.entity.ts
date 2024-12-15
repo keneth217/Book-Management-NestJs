@@ -23,11 +23,13 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Column({ nullable: true })
   phone: string;
+  @Column({ nullable: true })
+  picture: string;
 
   @ManyToMany(() => Role, (role) => role.users, { cascade: true })
   @JoinTable()
