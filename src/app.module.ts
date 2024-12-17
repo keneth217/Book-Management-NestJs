@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import { PassportModule } from '@nestjs/passport';
+import { PoemsaiModule } from './poemsai/poemsai.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { PassportModule } from '@nestjs/passport';
     UsersModule,
     AuthModule,
     RolesModule,
+    PoemsaiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
